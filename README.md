@@ -19,37 +19,41 @@ the build process using CMake*, which supports Linux*, and OS X*.
 You need the CMake tool and a C/C++ compiler that supports the Cilk
 language extensions.  The requirements for each operating systems are:
 
-Common:
+- Common:
     CMake 3.4.3 or later
     Make tools such as make
-Linux:
+- Linux:
     Tapir/LLVM compiler,
     or GCC* 4.9.2 or later (depracated),
     or Cilk-enabled branch of Clang*/LLVM* (http://cilkplus.github.io),
     or Intel(R) C++ Compiler v12.1 or later (depracated)
-OS X:
+- OS X:
     Tapir/LLVM compiler,
     or Cilk-enabled branch of Clang*/LLVM* (http://cilkplus.github.io),
     or Intel C++ Compiler v12.1 or later (depracated)
 
 The common steps to build the libraries are 1) invoke cmake with
 appropriate options, 2) invoke a make tool available on the system.
-The following examples show build processes on OS X and Windows.
+The following examples show build processes on Linux/OS X.
 
-OS X:
-    % mkdir ./build && cd ./build
-    % cmake -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
-            -DCMAKE_INSTALL_PREFIX=./install ..
-    % make && make install
+Linux/OS X:
+```bash
+$ mkdir ./build && cd ./build
+$ cmake -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
+        -DCMAKE_INSTALL_PREFIX=./install ..
+$ make && make install
+```
 
 #
 #  2. USING:
 #
 
 The Tapir/LLVM compiler requires an explicit compiler option,
--fcilkplus, to enable Cilk language extensions.  For example,
+`-fcilkplus`, to enable Cilk language extensions.  For example,
 
-% clang -fcilkplus -o foo.exe foo.c 
+```bash
+$ clang -fcilkplus -o foo.exe foo.c 
+```
 
 #
 #  3. DOXYGEN DOCUMENTATION:
@@ -58,7 +62,9 @@ The Tapir/LLVM compiler requires an explicit compiler option,
 The library source has Doxygen markup.  Generate HTML documentation
 based on the markup by changing directory into runtime and running:
 
-% doxygen doxygen.cfg
+```
+$ doxygen doxygen.cfg
+```
 
 #
 #  4. QUESTIONS OR BUGS:
