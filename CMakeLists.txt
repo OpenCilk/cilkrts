@@ -113,7 +113,7 @@ check_cxx_compiler_flag("-fcilkplus" SUPPORTS_CILKPLUS_FLAG)
 
 # Check for Cilk support
 if( SUPPORTS_CILKPLUS_FLAG )
-  set(CMAKE_REQUIRED_FLAGS "-fcilkplus")
+  set(CMAKE_REQUIRED_FLAGS "-fcilkplus -c")
 endif()
 CHECK_CXX_SOURCE_COMPILES("
 int fib(int n) {
