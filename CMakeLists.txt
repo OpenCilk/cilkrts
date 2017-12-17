@@ -109,10 +109,10 @@ endif()
 include(CheckCXXSourceCompiles)
 include(CheckCXXCompilerFlag)
 
-check_cxx_compiler_flag("-fcilkplus" SUPPORTS_CILKPLUS_FLAG)
+check_cxx_compiler_flag("-fcilkplus" CXX_SUPPORTS_CILKPLUS_FLAG)
 
 # Check for Cilk support
-if( SUPPORTS_CILKPLUS_FLAG )
+if( CXX_SUPPORTS_CILKPLUS_FLAG )
   set(CMAKE_REQUIRED_FLAGS "-fcilkplus -c")
 endif()
 CHECK_CXX_SOURCE_COMPILES("
@@ -127,16 +127,16 @@ int fib(int n) {
 
 int main() {
   return fib(10);
-}" HAVE_CILK_SUPPORT)
-if( NOT HAVE_CILK_SUPPORT )
+}" CXX_HAVE_CILK_SUPPORT)
+if( NOT CXX_HAVE_CILK_SUPPORT )
   message(FATAL_ERROR "CXX compiler must support Cilk.")
 endif()
-if( SUPPORTS_CILKPLUS_FLAG )
+if( CXX_SUPPORTS_CILKPLUS_FLAG )
   set(CMAKE_REQUIRED_FLAGS "")
 endif()
 
-check_cxx_compiler_flag("--rtlib=compiler-rt" SUPPORTS_COMPILER_RT)
-check_cxx_compiler_flag("--rtlib=libgcc" SUPPORTS_LIBGCC)
+check_cxx_compiler_flag("--rtlib=compiler-rt" CXX_SUPPORTS_COMPILER_RT)
+check_cxx_compiler_flag("--rtlib=libgcc" CXX_SUPPORTS_LIBGCC)
 
 ###############################################################################
 # Source file definitions
@@ -277,8 +277,6 @@ else()
         -DHAVE_ATTRIBUTE_VISIBILITY
         -DHAVE_PTHREAD_AFFINITY_NP
         -DDONT_USE_CPU_ALLOC_SIZE
-        -D__need_wchar_t
-        -D__need_size_t
     )
     # OS-dependent flags
     if(${APPLE})
@@ -291,6 +289,8 @@ else()
         list(APPEND cilk_flags
              -D_GNU_SOURCE
              -D_FORTIFY_SOURCE=2
+             -D__need_wchar_t
+             -D__need_size_t
         )
     endif()
     # Common C flags
@@ -298,7 +298,7 @@ else()
         -std=c99
     )
     # -fcilkplus is required when using GCC/LLVM
-    if(SUPPORTS_CILKPLUS_FLAG)
+    if(CXX_SUPPORTS_CILKPLUS_FLAG)
         set_property(SOURCE runtime/cilk-abi.c
                             runtime/cilk-abi-cilk-for.cpp
                             runtime/cilk_api.c
@@ -322,11 +322,11 @@ else()
              -ldl
              -Wl,-z,relro
              )
-        if(SUPPORTS_COMPILER_RT)
-             list(APPEND cilk_link_flags --rtlib=compiler-rt)
-        elseif(SUPPORTS_LIBGCC)
-             list(APPEND cilk_link_flags --rtlib=libgcc)
-         endif()
+    endif()
+    if(SUPPORTS_COMPILER_RT)
+        list(APPEND cilk_link_flags --rtlib=compiler-rt)
+    elseif(SUPPORTS_LIBGCC)
+        list(APPEND cilk_link_flags --rtlib=libgcc)
     endif()
 endif()
 
