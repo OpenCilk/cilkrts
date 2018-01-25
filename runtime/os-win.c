@@ -2,7 +2,7 @@
  *
  *************************************************************************
  *
- *  Copyright (C) 2009-2016, Intel Corporation
+ *  Copyright (C) 2009-2018, Intel Corporation
  *  All rights reserved.
  *  
  *  Redistribution and use in source and binary forms, with or without
@@ -34,13 +34,13 @@
  *  
  *  *********************************************************************
  *  
- *  PLEASE NOTE: This file is a downstream copy of a file mainitained in
+ *  PLEASE NOTE: This file is a downstream copy of a file maintained in
  *  a repository at cilkplus.org. Changes made to this file that are not
  *  submitted through the contribution process detailed at
  *  http://www.cilkplus.org/submit-cilk-contribution will be lost the next
  *  time that a new version is released. Changes only submitted to the
  *  GNU compiler collection or posted to the git repository at
- *  https://bitbucket.org/intelcilkruntime/itnel-cilk-runtime.git are
+ *  https://bitbucket.org/intelcilkruntime/intel-cilk-runtime are
  *  not tracked.
  *  
  *  We welcome your contributions to this open source project. Thank you
@@ -412,6 +412,7 @@ void win_init_processor_groups(void)
     if (initialized)
         return;
     initialized = 1;
+
 
     // Fetch the handle for Kernel32.  This should *always* succeed
     hKernel32 = GetModuleHandle(L"Kernel32.dll");

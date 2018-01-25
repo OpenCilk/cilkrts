@@ -2,7 +2,7 @@
  *
  *************************************************************************
  *
- *  Copyright (C) 2009-2016, Intel Corporation
+ *  Copyright (C) 2009-2018, Intel Corporation
  *  All rights reserved.
  *  
  *  Redistribution and use in source and binary forms, with or without
@@ -34,13 +34,13 @@
  *  
  *  *********************************************************************
  *  
- *  PLEASE NOTE: This file is a downstream copy of a file mainitained in
+ *  PLEASE NOTE: This file is a downstream copy of a file maintained in
  *  a repository at cilkplus.org. Changes made to this file that are not
  *  submitted through the contribution process detailed at
  *  http://www.cilkplus.org/submit-cilk-contribution will be lost the next
  *  time that a new version is released. Changes only submitted to the
  *  GNU compiler collection or posted to the git repository at
- *  https://bitbucket.org/intelcilkruntime/itnel-cilk-runtime.git are
+ *  https://bitbucket.org/intelcilkruntime/intel-cilk-runtime are
  *  not tracked.
  *  
  *  We welcome your contributions to this open source project. Thank you
@@ -67,9 +67,9 @@
 COMMON_SYSDEP unsigned long long __cilkrts_getticks(void)
 {
 #if defined __i386__ || defined __x86_64
-    unsigned a, d; 
-    __asm__ volatile("rdtsc" : "=a" (a), "=d" (d)); 
-    return ((unsigned long long)a) | (((unsigned long long)d) << 32); 
+    unsigned a, d;
+    __asm__ volatile("rdtsc" : "=a" (a), "=d" (d));
+    return ((unsigned long long)a) | (((unsigned long long)d) << 32);
 #else
 #   warning "unimplemented cycle counter"
     return 0;
@@ -111,23 +111,14 @@ COMMON_SYSDEP int __cilkrts_xchg(volatile int *ptr, int x)
  * supprt for the intrinsic.
  */
 #if defined(__INTEL_COMPILER)
-static inline int __builtin_cpu_supports(const char *feature)
-{
-    return 1;
-}
+#define __builtin_cpu_supports(feature) 1
 #elif defined(__has_builtin)
 #    if !__has_builtin(__builtin_cpu_supports)
-static inline int __builtin_cpu_supports(const char *feature)
-{
-    return 1;
-}
+#define __builtin_cpu_supports(feature) 1
 #    endif
 #elif defined(__has_feature)
 #    if !__has_feature(__builtin_cpu_supports)
-static inline int __builtin_cpu_supports(const char *feature)
-{
-    return 1;
-}
+#define __builtin_cpu_supports(feature) 1
 #    endif
 #endif
 

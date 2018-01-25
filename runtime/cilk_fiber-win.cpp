@@ -2,7 +2,7 @@
  *
  *************************************************************************
  *
- *  Copyright (C) 2012-2016, Intel Corporation
+ *  Copyright (C) 2012-2018, Intel Corporation
  *  All rights reserved.
  *  
  *  Redistribution and use in source and binary forms, with or without
@@ -34,13 +34,13 @@
  *  
  *  *********************************************************************
  *  
- *  PLEASE NOTE: This file is a downstream copy of a file mainitained in
+ *  PLEASE NOTE: This file is a downstream copy of a file maintained in
  *  a repository at cilkplus.org. Changes made to this file that are not
  *  submitted through the contribution process detailed at
  *  http://www.cilkplus.org/submit-cilk-contribution will be lost the next
  *  time that a new version is released. Changes only submitted to the
  *  GNU compiler collection or posted to the git repository at
- *  https://bitbucket.org/intelcilkruntime/itnel-cilk-runtime.git are
+ *  https://bitbucket.org/intelcilkruntime/intel-cilk-runtime are
  *  not tracked.
  *  
  *  We welcome your contributions to this open source project. Thank you
@@ -171,6 +171,9 @@ static BOOL is_thread_a_fiber_pre_vista()
  */
 static bool is_thread_a_fiber()
 {
+#if _WIN32_WINNT >= 0x0600
+    return IsThreadAFiber();
+#else
     typedef BOOL (*pfn_is_thread_a_fiber)();
 
     // Pointer to actual implementation of is_thread_a_fiber.
@@ -198,6 +201,7 @@ static bool is_thread_a_fiber()
 
     // Invoke the actual implementation.
     return imp_func();
+#endif
 }
 
 void cilk_fiber_sysdep::thread_to_fiber()
@@ -230,13 +234,13 @@ int cilk_fiber_sysdep::fiber_owner_is_current_worker(cilk_fiber_sysdep* fiber)
                 w, fiber->owner);
     }
     return (fiber->owner == w);
-}                                          
+}
 #endif
 
 
 inline void cilk_fiber_sysdep::resume_other_sysdep(cilk_fiber_sysdep* other)
 {
-#if SUPPORT_GET_CURRENT_FIBER    
+#if SUPPORT_GET_CURRENT_FIBER
     cilkos_set_tls_cilk_fiber(other);
 #endif
 

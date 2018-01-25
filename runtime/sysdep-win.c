@@ -2,7 +2,7 @@
  *
  *************************************************************************
  *
- *  Copyright (C) 2009-2016, Intel Corporation
+ *  Copyright (C) 2009-2018, Intel Corporation
  *  All rights reserved.
  *  
  *  Redistribution and use in source and binary forms, with or without
@@ -34,13 +34,13 @@
  *  
  *  *********************************************************************
  *  
- *  PLEASE NOTE: This file is a downstream copy of a file mainitained in
+ *  PLEASE NOTE: This file is a downstream copy of a file maintained in
  *  a repository at cilkplus.org. Changes made to this file that are not
  *  submitted through the contribution process detailed at
  *  http://www.cilkplus.org/submit-cilk-contribution will be lost the next
  *  time that a new version is released. Changes only submitted to the
  *  GNU compiler collection or posted to the git repository at
- *  https://bitbucket.org/intelcilkruntime/itnel-cilk-runtime.git are
+ *  https://bitbucket.org/intelcilkruntime/intel-cilk-runtime are
  *  not tracked.
  *  
  *  We welcome your contributions to this open source project. Thank you
@@ -596,12 +596,19 @@ void __cilkrts_stop_workers(global_state_t *g)
         // user worker.
         if (g->P > 1)
         {
-            DWORD status =
-                WaitForMultipleObjects(g->P - 1,             // Number of events in array
-                                       g->sysdep->hThreads,  // Array of handles
-                                       TRUE,                 // Wait for all
-                                       INFINITE);            // Do not timeout
-            CILK_ASSERT(WAIT_FAILED != status);
+            // MAXIMUM_WAIT_OBJECTS(=64) is the hard limit for WaitForMultipleObjects.
+            for (int i = 0; i < g->P - 1; i += MAXIMUM_WAIT_OBJECTS)
+            {
+                int num_objects = g->P - 1 - i;
+                if (num_objects > MAXIMUM_WAIT_OBJECTS)
+                    num_objects = MAXIMUM_WAIT_OBJECTS;
+                DWORD status =
+                    WaitForMultipleObjects(num_objects,             // Number of events in array
+                                           &g->sysdep->hThreads[i], // Array of handles
+                                           TRUE,                    // Wait for all
+                                           INFINITE);               // Do not timeout
+                CILK_ASSERT(WAIT_FAILED != status);
+            }
         }
 
 
