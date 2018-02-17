@@ -297,6 +297,9 @@ else()
     set(cilk_c_flags
         -std=c99
     )
+    set(cilk_cxx_flags
+        -std=c++98
+    )
     # -fcilkplus is required when using GCC/LLVM
     if(CXX_SUPPORTS_CILKPLUS_FLAG)
         set_property(SOURCE runtime/cilk-abi.c
