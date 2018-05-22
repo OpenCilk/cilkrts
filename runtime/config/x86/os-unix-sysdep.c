@@ -110,12 +110,25 @@ COMMON_SYSDEP int __cilkrts_xchg(volatile int *ptr, int x)
  * This declaration should generate an error when the Intel compiler adds
  * supprt for the intrinsic.
  */
-#if defined(__INTEL_COMPILER) || \
-  (defined(__clang__) && !__has_builtin(__builtin_cpu_supports))
+#if defined(__INTEL_COMPILER)
 static inline int __builtin_cpu_supports(const char *feature)
 {
     return 1;
 }
+#elif defined(__has_builtin)
+#    if !__has_builtin(__builtin_cpu_supports)
+static inline int __builtin_cpu_supports(const char *feature)
+{
+    return 1;
+}
+#    endif
+#elif defined(__has_feature)
+#    if !__has_feature(__builtin_cpu_supports)
+static inline int __builtin_cpu_supports(const char *feature)
+{
+    return 1;
+}
+#    endif
 #endif
 
 /*
